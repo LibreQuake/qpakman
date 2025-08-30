@@ -63,7 +63,7 @@ jobs:
         path: ./build-macos/qpakman
 
   windows_build:
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       VCPKG_VERSION: 8eb57355a4ffb410a2e94c07b4dca2dffbee8e50
       vcpkg_packages: zlib
@@ -72,13 +72,13 @@ jobs:
         config:
           - {
               arch: x86,
-              generator: "-G'Visual Studio 16 2019' -A Win32",
+              generator: "-G'Visual Studio 17 2022' -A Win32",
               vcpkg_triplet: x86-windows-static,
               artifact_name: windows32
             }
           - {
               arch: x64,
-              generator: "-G'Visual Studio 16 2019' -A x64",
+              generator: "-G'Visual Studio 17 2022' -A x64",
               vcpkg_triplet: x64-windows-static,
               artifact_name: windows64
             }
