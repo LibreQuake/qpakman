@@ -65,7 +65,6 @@ jobs:
   windows_build:
     runs-on: windows-2022
     env:
-      VCPKG_VERSION: 8eb57355a4ffb410a2e94c07b4dca2dffbee8e50
       vcpkg_packages: zlib
     strategy:
       matrix:
