@@ -93,9 +93,8 @@ public:
 
   rgb_image_c * NiceMip();
   // duplicate the image, scaling it exactly in half on each axis
-  // (hence the image MUST have an even width and height).  The
-  // color components (R,G,B,A) in each 2x2 block are averaged to
-  // produce the target pixel.
+  // (hence the image MUST have an even width and height).
+
 
   void QuakeSkyFix();
   // replaces solid black pixels in the left half of the image

@@ -21,6 +21,9 @@
 
 #include "im_image.h"
 
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "stb_image_resize2.h"
+
 
 rgb_image_c::rgb_image_c(int _w, int _h) : width(_w), height(_h), is_solid(false)
 {
@@ -177,25 +180,17 @@ rgb_image_c * rgb_image_c::NiceMip()
 
   rgb_image_c *copy = new rgb_image_c(new_w, new_h);
 
-  for (int y = 0; y < new_h; y++)
-  for (int x = 0; x < new_w; x++)
-  {
-    int R = 0, G = 0, B = 0, A = 0;
+  const unsigned char* src = (unsigned char*) (this->pixels);
+  unsigned char*       dst = (unsigned char*) (copy->pixels);
 
-    for (int dy = 0; dy < 2; dy++)
-    for (int dx = 0; dx < 2; dx++)
-    {
-      u32_t cur = PixelAt(x*2+dx, y*2+dy);
-
-      R += RGB_R(cur); G += RGB_G(cur);
-      B += RGB_B(cur); A += RGB_A(cur);
-    }
-
-    R /= 4; G /= 4;
-    B /= 4; A /= 4;
-
-    copy->PixelAt(x, y) = MAKE_RGBA(R, G, B, A);
-  }
+  stbir_resize(
+    src, width, height, 0,
+    dst, new_w, new_h, 0,
+    STBIR_4CHANNEL,              // stbir_pixel_layout pixel_layout
+    STBIR_TYPE_UINT8_SRGB_ALPHA, // stbir_datatype data_type
+    STBIR_EDGE_WRAP,             // stbir_edge edge
+    STBIR_FILTER_CATMULLROM      // stbir_filter filter
+  );
 
   return copy;
 }

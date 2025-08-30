@@ -12,6 +12,8 @@ else()
 	message(SEND_ERROR "You are building on unsupported platform")
 endif()
 
+add_compile_options("-O2")
+
 add_executable(qpakman
 	arc_spec.cc u_assert.cc u_file.cc u_util.cc im_color.cc im_image.cc
 	 im_gen.cc im_mip.cc im_format.cc im_tex.cc archive.cc pakfile.cc main.cc)
