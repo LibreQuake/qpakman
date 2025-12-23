@@ -28,7 +28,9 @@ void COL_SetFullBright(bool enable);
 void COL_SetTransparent(byte pix);
 
 byte COL_FindColor(const byte *palette, u32_t rgb_col);
+byte COL_FindColor(const byte *palette, u32_t rgb_col, bool *allowed_colors);
 byte COL_MapColor(u32_t rgb_col);
+byte COL_MapColor(u32_t rgb_col, bool *allowed_colors);
 
 void COL_LoadPaletteFromFile(const char *filename);
 

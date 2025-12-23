@@ -338,8 +338,12 @@ u32_t COL_ReadPalWithTrans(byte pix)
   return MAKE_RGB(R, G, B);
 }
 
-
 byte COL_FindColor(const byte *palette, u32_t rgb_col)
+{
+  return COL_FindColor(palette, rgb_col, nullptr);
+}
+
+byte COL_FindColor(const byte *palette, u32_t rgb_col, bool *allowed_colors)
 {
   int best_idx  = -1;
   int best_dist = (1<<30);
@@ -350,8 +354,15 @@ byte COL_FindColor(const byte *palette, u32_t rgb_col)
   int min_col = (game_type == GAME_Quake1) ? 1 : 0;
   int max_col = allow_fullbright ? 255 : 255-32;
 
+  // TODO: investigate if we should count *backwards* to give fullbright colors priority
   for (int i = min_col; i <= max_col; i++)
   {
+    // if an array of allowed colors is provided, skip colors not allowed
+    if(allowed_colors != nullptr && !allowed_colors[i])
+    {
+      continue;
+    }
+
     int dr = RGB_R(rgb_col) - palette[i*3+2];
     int dg = RGB_G(rgb_col) - palette[i*3+1];
     int db = RGB_B(rgb_col) - palette[i*3+0];
@@ -374,8 +385,12 @@ byte COL_FindColor(const byte *palette, u32_t rgb_col)
   return best_idx;
 }
 
-
 byte COL_MapColor(u32_t rgb_col)
+{
+  return COL_MapColor(rgb_col, nullptr);
+}
+
+byte COL_MapColor(u32_t rgb_col, bool *allowed_colors)
 {
   if (RGB_A(rgb_col) <= 128)
     return transparent_color;
@@ -392,7 +407,7 @@ byte COL_MapColor(u32_t rgb_col)
     color_cache.clear();
   }
 
-  byte pal_idx = COL_FindColor(palette, rgb_col);
+  byte pal_idx = COL_FindColor(palette, rgb_col, allowed_colors);
 
   color_cache[rgb_col] = pal_idx;
 
