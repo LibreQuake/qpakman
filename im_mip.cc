@@ -415,7 +415,7 @@ bool MIP_ProcessImage(const char *filename)
 
     delete img; img = tmp;
 
-    MIP_ConvertImage(img, true, nullptr, colors_used);
+    MIP_ConvertImage(img, false, nullptr, colors_used);
   }
 
   WAD2_FinishLump();
