@@ -18,6 +18,14 @@ add_executable(qpakman
 	arc_spec.cc u_assert.cc u_file.cc u_util.cc im_color.cc im_image.cc
 	 im_gen.cc im_mip.cc im_format.cc im_tex.cc archive.cc pakfile.cc main.cc)
 
+
+if(WIN32)
+	# include setargv.obj for file wildcard expansion
+	# https://learn.microsoft.com/en-us/cpp/c-language/expanding-wildcard-arguments
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} setargv.obj")
+endif()
+
+
 set_property(TARGET qpakman PROPERTY COMPILE_FLAGS -fno-rtti)
 
 target_link_libraries(qpakman -lm)
