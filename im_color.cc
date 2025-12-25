@@ -354,8 +354,10 @@ byte COL_FindColor(const byte *palette, u32_t rgb_col, bool *allowed_colors)
   int min_col = (game_type == GAME_Quake1) ? 1 : 0;
   int max_col = allow_fullbright ? 255 : 255-32;
 
-  // TODO: investigate if we should count *backwards* to give fullbright colors priority
-  for (int i = min_col; i <= max_col; i++)
+  // iterate through the color palette *backwards*, so that fullbright colors
+  // have precedence over non-fullbright colors
+  // (of course only if fullbright colors are enabled)
+  for (int i = max_col; i >= min_col; i--)
   {
     // if an array of allowed colors is provided, skip colors not allowed
     if(allowed_colors != nullptr && !allowed_colors[i])
