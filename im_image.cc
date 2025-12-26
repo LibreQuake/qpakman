@@ -259,6 +259,62 @@ rgb_image_c * rgb_image_c::AvgSelectMip()
   return copy;
 }
 
+rgb_image_c * rgb_image_c::NiceSelectMip()
+{
+  SYS_ASSERT((width  & 1) == 0);
+  SYS_ASSERT((height & 1) == 0);
+
+  int new_w = width  / 2;
+  int new_h = height / 2;
+
+  u32_t pixels_original[4];
+
+  // create a high-quality scaled down version
+  rgb_image_c *copy = NiceMip();
+
+  for (int y = 0; y < new_h; y++)
+  for (int x = 0; x < new_w; x++)
+  {
+    int idx_original = 0;
+
+    for (int dy = 0; dy < 2; dy++)
+    for (int dx = 0; dx < 2; dx++)
+    {
+      // save original pixel values, we'll select best match later
+      pixels_original[idx_original++] = PixelAt(x*2+dx, y*2+dy);
+    }
+
+    u32_t pixel_scaled = copy->PixelAt(x, y);
+
+    // select original pixel that matches average color best
+    int32_t best_error = 2000000000;
+    u32_t pixel_selected = 0;
+    for(int i = 0; i < 4; i++) {
+      u32_t cur = pixels_original[i];
+      int32_t error = 0;
+
+      int diff = RGB_R(cur) - RGB_R(pixel_scaled);
+      error += diff * diff;
+      diff = RGB_G(cur) - RGB_G(pixel_scaled);
+      error += diff * diff;
+      diff = RGB_B(cur) - RGB_B(pixel_scaled);
+      error += diff * diff;
+      diff = RGB_A(cur) - RGB_A(pixel_scaled);
+      error += diff * diff;
+
+      if(error < best_error)
+      {
+        best_error = error;
+        pixel_selected = cur;
+      }
+    }
+
+    copy->PixelAt(x, y) = pixel_selected;
+  }
+
+  return copy;
+}
+
 void rgb_image_c::QuakeSkyFix()
 {
   for (int y = 0; y < height; y++)

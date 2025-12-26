@@ -99,6 +99,10 @@ public:
   // duplicate the image, scaling it exactly in half on each axis
   // (hence the image MUST have an even width and height).
 
+  rgb_image_c * NiceSelectMip();
+  // duplicate the image, scaling it exactly in half on each axis
+  // (hence the image MUST have an even width and height).
+
   void QuakeSkyFix();
   // replaces solid black pixels in the left half of the image
   // with transparent parts.  Used for processing Quake 1 skies.

@@ -411,7 +411,7 @@ bool MIP_ProcessImage(const char *filename)
 
   for (int mip = 1; mip < MIP_LEVELS; mip++)
   {
-    rgb_image_c *tmp = img->AvgSelectMip();
+    rgb_image_c *tmp = img->NiceSelectMip();
 
     delete img; img = tmp;
 
