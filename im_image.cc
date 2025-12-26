@@ -196,6 +196,69 @@ rgb_image_c * rgb_image_c::NiceMip()
 }
 
 
+rgb_image_c * rgb_image_c::AvgSelectMip()
+{
+  SYS_ASSERT((width  & 1) == 0);
+  SYS_ASSERT((height & 1) == 0);
+
+  int new_w = width  / 2;
+  int new_h = height / 2;
+
+  u32_t pixels_original[4];
+
+  rgb_image_c *copy = new rgb_image_c(new_w, new_h);
+
+  for (int y = 0; y < new_h; y++)
+  for (int x = 0; x < new_w; x++)
+  {
+    int R = 0, G = 0, B = 0, A = 0;
+    int idx_original = 0;
+
+    for (int dy = 0; dy < 2; dy++)
+    for (int dx = 0; dx < 2; dx++)
+    {
+      u32_t cur = PixelAt(x*2+dx, y*2+dy);
+      
+      // save original pixel values, we'll select best match later
+      pixels_original[idx_original++] = cur;
+
+      R += RGB_R(cur); G += RGB_G(cur);
+      B += RGB_B(cur); A += RGB_A(cur);
+    }
+
+    R /= 4; G /= 4;
+    B /= 4; A /= 4;
+
+    // select original pixel that matches average color best
+    int32_t best_error = 2000000000;
+    u32_t pixel_selected = 0;
+    for(int i = 0; i < 4; i++) {
+      u32_t cur = pixels_original[i];
+      int32_t error = 0;
+
+      int diff = RGB_R(cur) - R;
+      error += diff * diff;
+      diff = RGB_G(cur) - G;
+      error += diff * diff;
+      diff = RGB_B(cur) - B;
+      error += diff * diff;
+      diff = RGB_A(cur) - A;
+      error += diff * diff;
+
+      if(error < best_error)
+      {
+        best_error = error;
+        pixel_selected = cur;
+      }
+    }
+
+    copy->PixelAt(x, y) = pixel_selected;
+  }
+
+
+  return copy;
+}
+
 void rgb_image_c::QuakeSkyFix()
 {
   for (int y = 0; y < height; y++)
