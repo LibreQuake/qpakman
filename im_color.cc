@@ -343,7 +343,7 @@ byte COL_FindColor(const byte *palette, u32_t rgb_col)
   return COL_FindColor(palette, rgb_col, nullptr);
 }
 
-byte COL_FindColor(const byte *palette, u32_t rgb_col, bool *allowed_colors)
+byte COL_FindColor(const byte *palette, u32_t rgb_col, bool *colors_allowed)
 {
   int best_idx  = -1;
   int best_dist = (1<<30);
@@ -360,7 +360,7 @@ byte COL_FindColor(const byte *palette, u32_t rgb_col, bool *allowed_colors)
   for (int i = max_col; i >= min_col; i--)
   {
     // if an array of allowed colors is provided, skip colors not allowed
-    if(allowed_colors != nullptr && !allowed_colors[i])
+    if(colors_allowed != nullptr && !colors_allowed[i])
     {
       continue;
     }
@@ -392,7 +392,7 @@ byte COL_MapColor(u32_t rgb_col)
   return COL_MapColor(rgb_col, nullptr);
 }
 
-byte COL_MapColor(u32_t rgb_col, bool *allowed_colors)
+byte COL_MapColor(u32_t rgb_col, bool *colors_allowed)
 {
   if (RGB_A(rgb_col) <= 128)
     return transparent_color;
@@ -409,7 +409,7 @@ byte COL_MapColor(u32_t rgb_col, bool *allowed_colors)
     color_cache.clear();
   }
 
-  byte pal_idx = COL_FindColor(palette, rgb_col, allowed_colors);
+  byte pal_idx = COL_FindColor(palette, rgb_col, colors_allowed);
 
   color_cache[rgb_col] = pal_idx;
 
