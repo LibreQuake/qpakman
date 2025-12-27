@@ -38,6 +38,7 @@ extern bool opt_force;
 extern bool opt_picture;
 extern bool opt_raw;
 extern bool opt_dither;
+extern int  opt_mip;
 
 
 void FatalError(const char *str, ...);
