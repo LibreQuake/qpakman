@@ -58,7 +58,7 @@ bool opt_force   = false;
 bool opt_raw     = false;
 bool opt_picture = false;
 bool opt_dither  = false;
-int  opt_mip     = 2;
+int  opt_mip     = MIP_NICE_SELECT;
 
 
 void FatalError(const char *message, ...)

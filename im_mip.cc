@@ -411,16 +411,16 @@ bool MIP_ProcessImage(const char *filename)
 
   for (int mip = 1; mip < MIP_LEVELS; mip++)
   {
-    rgb_image_c *tmp = img->NiceSelectMip();
+    rgb_image_c *tmp;
     switch(opt_mip)
     {
-      case 0:
+      case MIP_NICE:
         tmp = img->NiceMip();
         break;
-      case 1:
+      case MIP_AVG_SELECT:
         tmp = img->AvgSelectMip();
         break;
-      case 2:
+      case MIP_NICE_SELECT:
         tmp = img->NiceSelectMip();
         break;
       default:
