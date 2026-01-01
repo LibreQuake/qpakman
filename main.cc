@@ -98,6 +98,9 @@ void ShowUsage(void)
   printf("   -e  -extract     extract PAK/WAD contents into current dir\n");
   printf("   -m  -maketex     make a texture WAD from BSP files\n");
   printf("   -mip             select MIP algorithm, 0, 1 or 2 (default)\n");
+  printf("        0: high-quality downsampling\n");
+  printf("        1: averaging four pixels, then selecting the original color closest\n           to the average\n");
+  printf("        2: high-quality downsampling, then selecting the original color closest\n           to the downsampling result\n");
   printf("\n");
 
   printf("   -c  -colors XXX  load color palette from given file\n");
