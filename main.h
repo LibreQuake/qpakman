@@ -29,15 +29,19 @@ typedef enum
 }
 game_kind_e;
 
+#define MIP_NICE 0
+#define MIP_AVG_SELECT 1
+#define MIP_NICE_SELECT 2
+
 extern game_kind_e game_type;
 
 extern std::string color_name;
-
 
 extern bool opt_force;
 extern bool opt_picture;
 extern bool opt_raw;
 extern bool opt_dither;
+extern int  opt_mip;
 
 
 void FatalError(const char *str, ...);

@@ -58,6 +58,7 @@ bool opt_force   = false;
 bool opt_raw     = false;
 bool opt_picture = false;
 bool opt_dither  = false;
+int  opt_mip     = MIP_NICE_SELECT;
 
 
 void FatalError(const char *message, ...)
@@ -96,6 +97,10 @@ void ShowUsage(void)
   printf("   -l  -list        list contents of PAK/WAD file\n");
   printf("   -e  -extract     extract PAK/WAD contents into current dir\n");
   printf("   -m  -maketex     make a texture WAD from BSP files\n");
+  printf("   -mip             select MIP algorithm, 0, 1 or 2 (default)\n");
+  printf("        0: high-quality downsampling\n");
+  printf("        1: averaging four pixels, then selecting the original color closest\n           to the average\n");
+  printf("        2: high-quality downsampling, then selecting the original color closest\n           to the downsampling result\n");
   printf("\n");
 
   printf("   -c  -colors XXX  load color palette from given file\n");
@@ -156,6 +161,26 @@ int HandleOption(int argc, char **argv)
     return 1;
   }
 
+  if (StringCaseCmp(opt, "-mip") == 0)
+  {
+    if (argc <= 1 || argv[1][0] == '-')
+      FatalError("Missing MIP algorithm after %s\n", argv[0]);
+    
+    try
+    {
+      opt_mip = std::stoi(argv[1]);
+    } catch(...)
+    {
+      FatalError("Invalid value for MIP algorithm\n");
+    }
+    
+    if(opt_mip < 0 || opt_mip > 2)
+    {
+      FatalError("Invalid MIP algorithm selected: %d\n", opt_mip);
+    }
+
+    return 2;
+  }
 
   if (StringCaseCmp(opt, "-c") == 0 || StringCaseCmp(opt, "-color") == 0 ||
       StringCaseCmp(opt, "-colors") == 0)

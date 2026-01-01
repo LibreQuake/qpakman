@@ -172,12 +172,18 @@ std::string MIP_FileToLumpName(const char *filename, bool * fullbright)
 }
 
 
-void MIP_ConvertImage(rgb_image_c *img, bool dither = false)
+void MIP_ConvertImage(rgb_image_c *img, bool dither = false, bool *colors_used = nullptr, bool *colors_allowed = nullptr)
 {
   byte *line_buf = new byte[img->width];
   s16_t *err_buf = new s16_t[img->width * 3];
 
   memset(err_buf, 0, sizeof(s16_t) * img->width * 3);
+
+  // reset buffer of used palette colors, if provided
+  if(colors_used != nullptr)
+  {
+    memset(colors_used, false, sizeof(bool) * 256);
+  }
 
   for (int y = 0; y < img->height; y++)
   {
@@ -213,9 +219,14 @@ void MIP_ConvertImage(rgb_image_c *img, bool dither = false)
         if (b & 0xF00) b = (b < 0) ? 0 : 255;
 
         // store pixel
-        byte pix = COL_MapColor(MAKE_RGBA(r, g, b, alpha));
+        byte pix = COL_MapColor(MAKE_RGBA(r, g, b, alpha), colors_allowed);
 
         *dest++ = pix;
+
+        if(colors_used != nullptr)
+        {
+          colors_used[pix] = true;
+        }
 
         // determine new error
         u32_t got = COL_ReadPalette(pix);
@@ -233,7 +244,13 @@ void MIP_ConvertImage(rgb_image_c *img, bool dither = false)
     {
       for (; src < src_e; src++)
       {
-        *dest++ = COL_MapColor(*src);
+        byte pix = COL_MapColor(*src, colors_allowed);
+        *dest++ = pix;
+
+        if(colors_used != nullptr)
+        {
+          colors_used[pix] = true;
+        }
       }
     }
 
@@ -385,21 +402,39 @@ bool MIP_ProcessImage(const char *filename)
   COL_SetTransparent(0);
   COL_SetFullBright(fullbright);
 
+  // array to store which palette colors were used in MIP level zero
+  bool *colors_used = new bool[256];
 
   // now the actual textures
-  MIP_ConvertImage(img, opt_dither);
+  // first convert MIP level zero, gather data on used colors
+  MIP_ConvertImage(img, opt_dither, colors_used, nullptr);
 
   for (int mip = 1; mip < MIP_LEVELS; mip++)
   {
-    rgb_image_c *tmp = img->NiceMip();
+    rgb_image_c *tmp;
+    switch(opt_mip)
+    {
+      case MIP_NICE:
+        tmp = img->NiceMip();
+        break;
+      case MIP_AVG_SELECT:
+        tmp = img->AvgSelectMip();
+        break;
+      case MIP_NICE_SELECT:
+        tmp = img->NiceSelectMip();
+        break;
+      default:
+        FatalError("Invalid MIP algorithm selected: %d\n", opt_mip);
+    }
 
     delete img; img = tmp;
 
-    MIP_ConvertImage(img, true);
+    MIP_ConvertImage(img, false, nullptr, colors_used);
   }
 
   WAD2_FinishLump();
 
+  delete[] colors_used;
   delete img;
   return true;
 }
