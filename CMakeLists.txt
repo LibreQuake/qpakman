@@ -19,7 +19,7 @@ add_executable(qpakman
 	 im_gen.cc im_mip.cc im_format.cc im_tex.cc archive.cc pakfile.cc main.cc)
 
 
-if(WIN32)
+if(WIN32 AND MSVC)
 	# include setargv.obj for file wildcard expansion
 	# https://learn.microsoft.com/en-us/cpp/c-language/expanding-wildcard-arguments
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} setargv.obj")

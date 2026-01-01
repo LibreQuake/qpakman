@@ -31,6 +31,10 @@
 
 #define VERSION  "0.67"
 
+#ifdef __MINGW32__
+// force-enable wildcard expansion for mingw builds
+int _dowildcard = -1;
+#endif
 
 std::string output_name;
 
