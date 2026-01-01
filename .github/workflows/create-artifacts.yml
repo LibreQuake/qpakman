@@ -65,4 +65,21 @@ jobs:
       with:
         name: qpakman-win32
         path: ./build-win32/qpakman.exe
-  
+
+  macos_build:
+    runs-on: macos-15
+    env:
+      CXX: clang++
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Build
+      run: |
+        mkdir build-macos && cd build-macos
+        cmake ../
+        cmake --build .
+    - name: Archive qpakman macOS
+      uses: actions/upload-artifact@v4
+      with:
+        name: qpakman-macos
+        path: ./build-macos/qpakman
