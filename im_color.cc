@@ -352,13 +352,19 @@ byte COL_FindColor(const byte *palette, u32_t rgb_col, bool *colors_allowed)
   // Note: we skip index #0 (black), which is used for transparency
   //       in skies.  Black is duplicated at index #48 though.
   int min_col = (game_type == GAME_Quake1) ? 1 : 0;
-  int max_col = allow_fullbright ? 255 : 255-32;
 
   // iterate through the color palette *backwards*, so that fullbright colors
   // have precedence over non-fullbright colors
   // (of course only if fullbright colors are enabled)
-  for (int i = max_col; i >= min_col; i--)
+  for (int i = 255; i >= min_col; i--)
   {
+    // skip fullbright colors if fullbrights are not enabled.
+    // Don't skip for the transparent color.
+    if(!allow_fullbright && i >= (255-32) && i != transparent_color)
+    {
+      continue;
+    }
+
     // if an array of allowed colors is provided, skip colors not allowed
     if(colors_allowed != nullptr && !colors_allowed[i])
     {
