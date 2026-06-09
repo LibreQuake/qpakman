@@ -403,7 +403,8 @@ bool MIP_ProcessImage(const char *filename)
   COL_SetFullBright(fullbright);
 
   // Quake1: If the texture names starts with "{", then enable transparency
-  if(game_type == GAME_Quake1 && lump_name.rfind("{", 0) == 0) {
+  if(game_type == GAME_Quake1 && lump_name.rfind("{", 0) == 0)
+  {
     COL_SetTransparent(255);
   }
 
