@@ -360,7 +360,7 @@ byte COL_FindColor(const byte *palette, u32_t rgb_col, bool *colors_allowed)
   {
     // skip fullbright colors if fullbrights are not enabled.
     // Don't skip for the transparent color.
-    if(!allow_fullbright && i >= (255-32) && i != transparent_color)
+    if(!allow_fullbright && i > (255-32) && i != transparent_color)
     {
       continue;
     }
