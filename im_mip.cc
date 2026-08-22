@@ -523,7 +523,7 @@ static const char * ExpandFileName(const char *lump_name, bool fullbright)
     if (*p == ' ')
       *p = '_';
 
-    if (*p != '_' && *p != '-' && ! isalnum(*p))
+    if (*p != '_' && *p != '-' && *p != '{' && ! isalnum(*p))
     {
       if (! warned)
       {
