@@ -605,6 +605,9 @@ bool MIP_ExtractMipTex(int entry, const char *lump_name)
     return false;
   }
 
+  // Is this a "fence"-texture? (transparency)
+  bool fence = *lump_name == '{';
+
   // create the image for saving.
   // if the image contains fullbright pixels, the output filename
   // will be given the '_fbr' prefix.
@@ -617,8 +620,11 @@ bool MIP_ExtractMipTex(int entry, const char *lump_name)
   {
     byte pix = pixels[y*width + x];
 
-    if (pix >= 256-32)
-      fullbright = true;
+    // for fence-textures, color-index 255 is transpareny (not fullbright)
+    bool transparent = (fence && pix == 255);
+
+    // fullbright if in fullbright range and not a transparent pixel
+    fullbright |= (pix >= 256-32) && !transparent;
 
     img->PixelAt(x, y) = COL_ReadPalette(pix);
   }
